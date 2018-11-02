@@ -1,0 +1,71 @@
+body {
+  font-size: 16px;
+  font-family: 'Roboto', sans-serif;
+  line-height: 22px;
+  letter-spacing: normal;
+  color: #484848;
+  font-weight: normal;
+  background-color: #fff;
+}
+
+a {
+  color: #008489;
+  font-weight: normal;
+  text-decoration: none;
+  text-decoration-line: none;
+  text-decoration-style: initial;
+  text-decoration-color: initial;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.totalReviews {
+  font-size: 1em;
+}
+
+.floatLeft50 {
+  float: left;
+  width: 50%;
+}
+
+.floatRight50 {
+  float: right;
+  width: 50%;
+}
+
+.totalReviewsDiv {
+  float: left;
+  width: 66.67%;
+  height: 45px;
+  vertical-align: middle;
+}
+
+.searchBarDiv {
+  float: right;
+  width: 33.33%;
+  height: 45px;
+  vertical-align: middle;
+}
+
+.searchBar {
+  width: 100%;
+  height: 30px;
+  vertical-align: middle;
+  font-size: 14px;
+  line-height: 18px;
+  font-family: 'Roboto', sans-serif;
+  color: #484848;
+  font-weight: 600;
+  border-width: 1px;
+  border-color: #EBEBEB;
+  border-radius: 2px;
+  background-color: transparent;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  padding-left: 7px;
+  padding-right: 7px;
+  margin-bottom: 8px;
+
+}
