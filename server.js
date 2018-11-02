@@ -59,26 +59,26 @@ app.get('/listingdata', (req, res) => {
   let requestId = req.query.id;
   requestId = requestId.slice(-3) * 1;
   axios.get(`http://3.16.89.66/listingdata?id=${requestId}`)
-  .then((results) => res.send(results.data))
-  .catch((err) => console.error(err));
-})
+    .then((results) => res.send(results.data))
+    .catch((err) => console.error(err));
+});
 
 app.get('/neighborhooddata', (req, res) => {
   let requestId = req.query.id;
   requestId = requestId.slice(-3) * 1;
   axios.get(`http://3.16.89.66/neighborhooddata?id=${requestId}`)
-  .then((results) => res.send(results.data))
-  .catch((err) => console.error(err));
-})
+    .then((results) => res.send(results.data))
+    .catch((err) => console.error(err));
+});
 
 app.get('/landmarkdata', (req, res) => {
   let lat = req.query.listingLat;
   let long = req.query.listingLong;
   axios.get(`http://3.16.89.66/landmarkdata?listingLat=${lat}&listingLong=${long}`)
-  .then((results) => res.send(results.data))
-  .catch((err) => console.error(err));
-})
+    .then((results) => res.send(results.data))
+    .catch((err) => console.error(err));
+});
  
- app.listen(port, () => {
+app.listen(port, () => {
   console.log(`server running at: http://localhost:${port}`);
- });
+});
