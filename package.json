@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server-dev": "nodemon server/index.js",
+    "server-dev": "nodemon server.js",
     "react-dev": "webpack -d --watch",
     "seed": "mysql -u stacykim -p --host=staybnb.c1bo9omfdnqb.us-east-2.rds.amazonaws.com stacykim",
-    "start-aws": "pm2 start server/index.js",
+    "start-aws": "pm2 start server.js",
     "listpm2": "pm2 list",
     "pm2server": "pm2 show server",
     "pm2stop": "pm2 stop 0",
