@@ -7,7 +7,7 @@ const port = process.env.PORT || 7000;
 const CORS = require('cors');
 const bodyparser = require('body-parser');
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'Public')));
 
 app.use(morgan('dev'));
 app.use(bodyparser.json());
@@ -19,7 +19,7 @@ app.all('/*', function(req, res, next) {
 });
 
 app.get('/listing', (req, res)=>{
-  res.sendFile(path.join(__dirname + '/public/index.html'))
+  res.sendFile(path.join(__dirname + '/Public/index.html'))
 });
 
 app.get('/ratings', (req, res) => {
