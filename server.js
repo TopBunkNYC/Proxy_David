@@ -89,6 +89,15 @@ app.get('/description', (req, res) => {
       res.send();
     });
 });
+
+app.get('/bookinglisting/:id', (req, res) => {
+
+  let id = req.params.id
+
+  axios.get(`http://18.216.104.91/bookinglisting/${id}`)
+    .then((results) => res.send(results.data))
+    .catch((err) => console.error(err));
+});
  
 app.listen(port, () => {
   console.log(`server running at: http://localhost:${port}`);
