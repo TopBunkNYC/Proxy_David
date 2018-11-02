@@ -12,7 +12,7 @@ app.use(express.static(path.join(__dirname, 'Public')));
 app.use(morgan('dev'));
 app.use(bodyparser.json());
 
-// app.use (CORS())
+app.use (CORS())
 app.all('/*', function(req, res, next) {
  res.header('Access-Control-Allow-Origin', '*');
  next();
@@ -77,6 +77,17 @@ app.get('/landmarkdata', (req, res) => {
   axios.get(`http://3.16.89.66/landmarkdata?listingLat=${lat}&listingLong=${long}`)
     .then((results) => res.send(results.data))
     .catch((err) => console.error(err));
+});
+
+app.get('/description', (req, res) => {
+  axios.get(`http://52.14.238.117${req.url}`)
+    .then((results) => {
+      res.send(results.data);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.send();
+    });
 });
  
 app.listen(port, () => {
