@@ -18,6 +18,13 @@ app.all('/*', function(req, res, next) {
  next();
 });
 
+app.get('/bookinglisting/:id', (req, res) => {
+  let id = req.params.id
+  axios.get(`http://18.216.104.91/bookinglisting/${id}`)
+    .then((results) => res.send(results.data))
+    .catch((err) => console.error(err));
+});
+
 app.get('/listing', (req, res)=>{
   res.sendFile(path.join(__dirname + '/Public/index.html'))
 });
@@ -88,15 +95,6 @@ app.get('/description', (req, res) => {
       console.error(err);
       res.send();
     });
-});
-
-app.get('/bookinglisting/:id', (req, res) => {
-
-  let id = req.params.id
-
-  axios.get(`http://18.216.104.91/bookinglisting/${id}`)
-    .then((results) => res.send(results.data))
-    .catch((err) => console.error(err));
 });
  
 app.listen(port, () => {
