@@ -2,7 +2,7 @@
   "name": "proxy_stacy",
   "version": "1.0.0",
   "description": "Stacy Kim's proxy",
-  "main": "public/index.html",
+  "main": "Public/index.html",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "server-dev": "nodemon server.js",
