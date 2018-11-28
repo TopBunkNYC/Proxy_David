@@ -21,18 +21,24 @@ a:hover {
   text-decoration: underline;
 }
 
-.containerLeft {
+.container-left {
   float: left;
-  width: 60%;
+  padding-left: 24px;
+  width: 55%;
 }
 
-.containerRight {
-  float:right;
-  width:40%;
+.container-right {
+  float: right;
+  position: fixed;
+  left: 760px;
+  top: 20px;
+  right: 5%;
 }
 
 #description {
-  margin-left:-94px !important;
+  margin-left: -94.5px;
+  margin-top: 20px;
+  margin-bottom: 5px;
 }
 
 #reviews {
