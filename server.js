@@ -139,6 +139,7 @@ app.get('/listings', (req, res) => {
   let apps = {};
   let props = {};
   (async() => {
+    // Get all props from services
     await Promise.all([
       // 0: Reviews module, reviews endpoint
       axios.get('http://localhost:8001/reviews', {
@@ -155,9 +156,14 @@ app.get('/listings', (req, res) => {
       })
     ])
     .then(({data}) => {
-      props.Reviews = {reviews: data[0], ratings: data[1]}
+      props.Reviews = {
+        reviews: data[0], 
+        ratings: data[1], 
+        search: [], 
+        showSearch: false
+      };
       let reviewsComponent = React.createElement(components.ReviewsServer, props.Reviews);
-      app.Reviews = ReactDOM.renderToString(reviewsComponent);
+      apps.Reviews = ReactDOM.renderToString(reviewsComponent);
       // add other components like previous two lines
     });
 
@@ -177,7 +183,7 @@ app.get('/listings', (req, res) => {
         <body>
           <div class="container-left">
             <div id="description"></div>
-            <div id="reviews"></div>
+            <div id="reviews">${apps.Reviews}</div>
             <div id="neighborhood"></div>
           </div>
           <div class=container-right>
