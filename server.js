@@ -45,7 +45,7 @@ app.get('/bookinglisting/:id', (req, res) => {
     .catch((err) => console.error(err));
 });
 
-// To be modified: Reviews API endpoints
+// To be modified: Reviews API endpoints (change host)
 app.get('/ratings', (req, res) => {
   axios.get(`http://localhost:8001${req.url}`)
     .then((results) => {
@@ -136,84 +136,74 @@ app.get('/landmarkdata', (req, res) => {
 
 // Send back SSR response to main request
 app.get('/listings', (req, res) => {
-  let apps = {};
-  let props = {};
-  (async() => {
-    // Get all props from services
-    await Promise.all([
-      // 0: Reviews module, reviews endpoint
-      axios.get('http://localhost:8001/reviews', {
-        params: {
-          id: req.query.id
-        }
-      }), 
-
-      // 1: Reviews module, ratings endpoint
-      axios.get('http://localhost:8001/ratings', {
-        params: {
-          id: req.query.id
-        }
-      })
-    ])
-    .then(({data}) => {
-      props.Reviews = {
-        reviews: data[0], 
-        ratings: data[1], 
-        search: [], 
-        showSearch: false
-      };
-      let reviewsComponent = React.createElement(components.ReviewsServer, props.Reviews);
-      apps.Reviews = ReactDOM.renderToString(reviewsComponent);
-      // add other components like previous two lines
+  Promise.all([
+    // 0: Reviews module, SSR tuple
+    axios.get('http://localhost:8001/renderReviews', {
+      params: {
+        id: req.query.id
+      }
+    })
+  ])
+  .then((results) => {
+    let htmls = [];
+    let props = [];
+    results.forEach(({data}) => {
+      htmls.push(data[0]);
+      props.push(data[1]);
     });
-
+    // add other components!!
+    
     res.end(`
-    <!DOCTYPE html>
+      <!DOCTYPE html>
       <html lang="en">
-        <head>
-          <meta charset="UTF-8">
-          <link rel="stylesheet" href="/style.css">
-          <!-- <link type="text/css" rel="stylesheet" href="http://18.218.27.164/style.css"> -->
-          <!-- <link type="text/css" rel="stylesheet" href="http://3.16.89.66/style.css"> -->
-          <!-- <link type="text/css" rel="stylesheet" href="http://18.216.104.91/guestBar.css"> -->
-          <link rel="icon" type="image/png" href="https://s3.us-east-2.amazonaws.com/topbunk-profilephotos/favicon.ico">
-          <title>TopBunk</title>
-        </head>
-
-        <body>
-          <div class="container-left">
-            <div id="description"></div>
-            <div id="reviews">${apps.Reviews}</div>
-            <div id="neighborhood"></div>
-          </div>
-          <div class=container-right>
-            <div id="booking"></div>
-          </div>
-
-          <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
-          <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
-
-          <!-- <script src="http://52.14.238.117/bundle.js"></script>
-          <script src="http://18.216.104.91/bundle.js"></script>
-          <script src="http://18.218.27.164/bundle.js"></script>
-          <script src="http://3.16.89.66/app.js"></script> -->
-          
-          <!-- <script>ReactDOM.render(React.createElement(Description), document.getElementById('description'));</script> -->
-          <!-- <script>ReactDOM.render(React.createElement(Neighborhood), document.getElementById('neighborhood'));</script> -->
-
-          <script src="${services.Reviews}"></script>
-          <!-- INSERT ALL CLIENT BUNDLES ABOVE THIS LINE -->
-
-          <script>
-            ReactDOM.hydrate(
-              React.createElement(Reviews, ${JSON.stringify(props.Reviews)}),
-              document.getElementById('reviews')
-            );
-          </script>
+      <head>
+      <meta charset="UTF-8">
+      <link rel="stylesheet" href="/style.css">
+      <link rel="stylesheet" href="http://localhost:8001/style.css">
+      <!-- <link type="text/css" rel="stylesheet" href="http://18.218.27.164/style.css"> -->
+      <!-- <link type="text/css" rel="stylesheet" href="http://3.16.89.66/style.css"> -->
+      <!-- <link type="text/css" rel="stylesheet" href="http://18.216.104.91/guestBar.css"> -->
+      <link rel="icon" type="image/png" href="https://s3.us-east-2.amazonaws.com/topbunk-profilephotos/favicon.ico">
+      <title>TopBunk</title>
+      </head>
+      
+      <body>
+      <div class="container-left">
+      <div id="description"></div>
+      <div id="reviews">${htmls[0]}</div>
+      <div id="neighborhood"></div>
+      </div>
+      <div class=container-right>
+      <div id="booking"></div>
+      </div>
+      
+      <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+      <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+      
+      <!-- <script src="http://52.14.238.117/bundle.js"></script>
+      <script src="http://18.216.104.91/bundle.js"></script>
+      <script src="http://18.218.27.164/bundle.js"></script>
+      <script src="http://3.16.89.66/app.js"></script> -->
+      
+      <!-- <script>ReactDOM.render(React.createElement(Description), document.getElementById('description'));</script> -->
+      <!-- <script>ReactDOM.render(React.createElement(Neighborhood), document.getElementById('neighborhood'));</script> -->
+      
+      <script src="${services.Reviews}"></script>
+      <!-- INSERT ALL CLIENT BUNDLES ABOVE THIS LINE -->
+      
+      <script>
+      ReactDOM.hydrate(
+        React.createElement(Reviews, ${props[0]}),
+        document.getElementById('reviews')
+        );
+        </script>
         </body>
-      </html>
+        </html>
     `);
-  })();
+  })
+  .catch((err) => {
+    console.error(err);
+  })
 });
 
 app.get('/*', (req, res) => {
