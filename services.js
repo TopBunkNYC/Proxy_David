@@ -1,4 +1,4 @@
 module.exports = {
-  'Reviews': 'http://localhost:8001/bundle.js',
-  'ReviewsServer': 'http://localhost:8001/review-bundle-server.js'
+  'Reviews': 'http://18.224.27.117',
+  'ReviewsClient': 'https://s3.us-east-2.amazonaws.com/topbunk-profilephotos/client-bundle.js'
 }

@@ -54,3 +54,12 @@ a:hover {
   top:20px;
   padding-left: 3%
 }
+
+#sectionTitle {
+  width: 60% !important;
+}
+
+.searchBar {
+  margin-left: 15px !important;
+  width: 82% !important;
+}

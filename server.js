@@ -1,24 +1,19 @@
 require('newrelic');
 const express = require('express');
-// const morgan = require('morgan');
-// const cors = require('cors');
 const path = require('path');
+const compression = require('compression');
 const axios = require('axios');
 const parser = require('body-parser');
-const fetch = require('node-fetch');
-const fs = require('fs');
-const React = require('react');
-const ReactDOM = require('react-dom/server');
 const services = require('./services.js');
-const components = {};
 const port = process.env.PORT || 8000;
 
 const app = express();
 
 app.use(express.static(path.join(__dirname, '/public')));
-// app.use(morgan('dev'));
-// app.use(cors())
 app.use(parser.json());
+if (process.env.useCompression === 'true') {
+  app.use(compression());
+} 
 
 app.all('/*', function(req, res, next) {
  res.header('Access-Control-Allow-Origin', '*');
@@ -26,28 +21,28 @@ app.all('/*', function(req, res, next) {
 });
 
 // To be modified: Description API endpoint
-app.get('/description', (req, res) => {
-  axios.get(`http://52.14.238.117${req.url}`)
-    .then((results) => {
-      res.send(results.data);
-    })
-    .catch((err) => {
-      console.error(err);
-      res.send();
-    });
-});
+// app.get('/description', (req, res) => {
+//   axios.get(`http://52.14.238.117${req.url}`)
+//     .then((results) => {
+//       res.send(results.data);
+//     })
+//     .catch((err) => {
+//       console.error(err);
+//       res.send();
+//     });
+// });
 
 // To be modified: Booking API endpoints
-app.get('/bookinglisting/:id', (req, res) => {
-  let id = req.params.id
-  axios.get(`http://18.216.104.91/bookinglisting/${id}`)
-    .then((results) => res.send(results.data))
-    .catch((err) => console.error(err));
-});
+// app.get('/bookinglisting/:id', (req, res) => {
+//   let id = req.params.id
+//   axios.get(`http://18.216.104.91/bookinglisting/${id}`)
+//     .then((results) => res.send(results.data))
+//     .catch((err) => console.error(err));
+// });
 
-// To be modified: Reviews API endpoints (change host)
+// Reviews API endpoints
 app.get('/ratings', (req, res) => {
-  axios.get(`http://localhost:8001${req.url}`)
+  axios.get(`${services.Reviews}${req.url}`)
     .then((results) => {
       res.send(results.data);
     })
@@ -58,7 +53,7 @@ app.get('/ratings', (req, res) => {
 });
 
 app.get('/reviews', (req, res) => {
-  axios.get(`http://localhost:8001${req.url}`)
+  axios.get(`${services.Reviews}${req.url}`)
     .then((results) => {
       res.send(results.data);
     })
@@ -69,7 +64,7 @@ app.get('/reviews', (req, res) => {
 });
 
 app.get('/search', (req, res) => {
-  axios.get(`http://localhost:8001${req.url}`)
+  axios.get(`${services.Reviews}${req.url}`)
     .then((results) => {
       res.send(results.data);
     })
@@ -80,86 +75,68 @@ app.get('/search', (req, res) => {
 });
 
 // To be modified: Neighborhood API endpoints
-app.get('/listingdata', (req, res) => {
-  let requestId = req.query.id;
-  requestId = requestId.slice(-3) * 1;  // TO BE UPDATED
-  axios.get(`http://3.16.89.66/listingdata?id=${requestId}`)
-    .then((results) => res.send(results.data))
-    .catch((err) => console.error(err));
-});
+// app.get('/listingdata', (req, res) => {
+//   let requestId = req.query.id;
+//   requestId = requestId.slice(-3) * 1;  // TO BE UPDATED
+//   axios.get(`http://3.16.89.66/listingdata?id=${requestId}`)
+//     .then((results) => res.send(results.data))
+//     .catch((err) => console.error(err));
+// });
 
-app.get('/neighborhooddata', (req, res) => {
-  let requestId = req.query.id;
-  requestId = requestId.slice(-3) * 1;  // TO BE UPDATED
-  axios.get(`http://3.16.89.66/neighborhooddata?id=${requestId}`)
-    .then((results) => res.send(results.data))
-    .catch((err) => console.error(err));
-});
+// app.get('/neighborhooddata', (req, res) => {
+//   let requestId = req.query.id;
+//   requestId = requestId.slice(-3) * 1;  // TO BE UPDATED
+//   axios.get(`http://3.16.89.66/neighborhooddata?id=${requestId}`)
+//     .then((results) => res.send(results.data))
+//     .catch((err) => console.error(err));
+// });
 
-app.get('/landmarkdata', (req, res) => {
-  let lat = req.query.listingLat;
-  let long = req.query.listingLong;
-  axios.get(`http://3.16.89.66/landmarkdata?listingLat=${lat}&listingLong=${long}`)
-    .then((results) => res.send(results.data))
-    .catch((err) => console.error(err));
-});
+// app.get('/landmarkdata', (req, res) => {
+//   let lat = req.query.listingLat;
+//   let long = req.query.listingLong;
+//   axios.get(`http://3.16.89.66/landmarkdata?listingLat=${lat}&listingLong=${long}`)
+//     .then((results) => res.send(results.data))
+//     .catch((err) => console.error(err));
+// });
 
-// Consider downloading client bundles for each component... not at this point
-
-// Download Node server bundles for each component
-(() => {
-  let serviceNames = ['ReviewsServer'];  // TODO: UPDATE to add other services when available
-  serviceNames.forEach((service) => {
-    let url = path.join(__dirname, `public/bundles/${service}.js`);
-    fs.access(url, (err) => {
-      if (err) {
-        fetch(services[service])
-        .then((response) => {
-          const dest = fs.createWriteStream(url);
-          response.body.pipe(dest);
-          response.body.on('end', () => {
-            setTimeout(() => {
-              components[service] = require(url).default;
-              console.log(`Node server bundle for ${service} written.`)
-            }, 1000);
-          });
-        })
-        .catch((err) => {console.error(err)});
-      } else {
-        components[service] = require(url).default;
-        console.log(`Node server bundle for ${service} already exists.`)
+const getSSRTuples = (id) => {
+  return Promise.all([
+    // 0: Reviews
+    axios.get(`${services.Reviews}/renderReviews`, {
+      params: {
+        id: id
       }
     })
+    .then(({data}) => {
+      return data;
+    })
+    .catch((err) => console.error(err))
+
+    // ,
+    // 1: Description
+
+    // 2: Booking
+
+    // 3: Neighborhood
+
+  ])
+  .catch((err) => {
+    console.error(err);
   })
-})();
+}
 
 
 // Send back SSR response to main request
-app.get('/listings', (req, res) => {
-  Promise.all([
-    // 0: Reviews module, SSR tuple
-    axios.get('http://localhost:8001/renderReviews', {
-      params: {
-        id: req.query.id
-      }
-    })
-  ])
+app.get('/listings', (req, res) => {    
+  getSSRTuples(req.query.id)
   .then((results) => {
-    let htmls = [];
-    let props = [];
-    results.forEach(({data}) => {
-      htmls.push(data[0]);
-      props.push(data[1]);
-    });
-    // add other components!!
-    
     res.end(`
       <!DOCTYPE html>
       <html lang="en">
       <head>
       <meta charset="UTF-8">
       <link rel="stylesheet" href="/style.css">
-      <link rel="stylesheet" href="http://localhost:8001/style.css">
+      <link rel="stylesheet" href="${services.Reviews}/style.css">
       <!-- <link type="text/css" rel="stylesheet" href="http://18.218.27.164/style.css"> -->
       <!-- <link type="text/css" rel="stylesheet" href="http://3.16.89.66/style.css"> -->
       <!-- <link type="text/css" rel="stylesheet" href="http://18.216.104.91/guestBar.css"> -->
@@ -170,7 +147,7 @@ app.get('/listings', (req, res) => {
       <body>
       <div class="container-left">
       <div id="description"></div>
-      <div id="reviews">${htmls[0]}</div>
+      <div id="reviews">${results[0][0]}</div>
       <div id="neighborhood"></div>
       </div>
       <div class=container-right>
@@ -188,22 +165,20 @@ app.get('/listings', (req, res) => {
       <!-- <script>ReactDOM.render(React.createElement(Description), document.getElementById('description'));</script> -->
       <!-- <script>ReactDOM.render(React.createElement(Neighborhood), document.getElementById('neighborhood'));</script> -->
       
-      <script src="${services.Reviews}"></script>
+      <script src="${services.ReviewsClient}"></script>
       <!-- INSERT ALL CLIENT BUNDLES ABOVE THIS LINE -->
       
       <script>
       ReactDOM.hydrate(
-        React.createElement(Reviews, ${props[0]}),
+        React.createElement(Reviews, ${results[0][1]}),
         document.getElementById('reviews')
         );
-        </script>
-        </body>
-        </html>
+      </script>
+      </body>
+      </html>
     `);
   })
-  .catch((err) => {
-    console.error(err);
-  })
+  .catch((err) => console.error(err))
 });
 
 app.get('/*', (req, res) => {
