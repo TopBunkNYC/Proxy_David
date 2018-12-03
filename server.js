@@ -117,7 +117,7 @@ const getSSRObjects = (id) => {
     }),
 
     // 1: Description
-    axios.get(`${services.descriptionHost}/renderReviews`, {
+    axios.get(`${services.descriptionHost}/renderDescription`, {
       params: {
         id: id
       }
@@ -172,8 +172,12 @@ app.get('/listings', (req, res) => {
         <meta charset="UTF-8">
         <!-- Proxy stylesheet -->
         <link rel="stylesheet" href="/style.css">
-        <!-- Bookings stylesheet -->
-        <!-- <link type="text/css" rel="stylesheet" href="http://18.216.104.91/guestBar.css"> -->
+        <!-- Reviews stylesheet -->
+        <link type="text/css" rel="stylesheet" href="${services.reviewsHost}/style.css">
+        <!-- Bookings stylesheets -->
+        <link type="text/css" rel="stylesheet" href="${services.bookingHost}/guestBar.css">
+        <link type="text/css" rel="stylesheet" href="${services.bookingHost}/flexboxgrid2.css">
+        <link type="text/css" rel="stylesheet" href="${services.bookingHost}/_datepicker.css">
         <link rel="icon" type="image/png" href="https://s3.us-east-2.amazonaws.com/topbunk-profilephotos/favicon.ico">
         <title>TopBunk</title>
       </head>
@@ -182,7 +186,7 @@ app.get('/listings', (req, res) => {
         <div class="container-left">
           <div id="description">${results[1].ssr_html}</div>
           <div id="reviews">${results[0].ssr_html}</div>
-          <div id="neighborhood">${results[3].ssr_html}</div>
+          <!-- <div id="neighborhood">${results[3].ssr_html}</div> -->
         </div>
         <div class=container-right>
           <div id="booking">${results[2].ssr_html}</div>
@@ -208,7 +212,7 @@ app.get('/listings', (req, res) => {
 
         <script>
         ReactDOM.hydrate(
-          React.createElement(Booking, ${results[2].props}),
+          React.createElement(Booking, ${JSON.stringify(results[2].props)}),
           document.getElementById('booking')
           );
         </script>
@@ -220,12 +224,13 @@ app.get('/listings', (req, res) => {
           );
         </script>
 
-        <script>
+        <!-- <script>
         ReactDOM.hydrate(
           React.createElement(Neighborhood, ${results[3].props}),
           document.getElementById('neighborhood')
           );
-        </script>
+        </script> -->
+
         <!-- END: HYDRATION -->
 
       </body>

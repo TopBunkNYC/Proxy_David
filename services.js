@@ -5,6 +5,6 @@ module.exports = {
   'descriptionClient': process.env.descriptionClient || 'https://s3.amazonaws.com/topbunk-nyc-description/bundle.js',
   'neighborhoodHost': process.env.neighborhoodHost || 'http://sdc-neighb-989266127.us-east-2.elb.amazonaws.com/',
   'neighborhoodClient': process.env.neighborhoodClient || 'http://sdc-neighb-989266127.us-east-2.elb.amazonaws.com/app.js',
-  'bookingHost': process.env.bookingsHost || 'http://ec2co-ecsel-14mqx2j7r6mip-726135605.us-east-2.elb.amazonaws.com:9005',
-  'bookingClient': process.env.bookingsClient || 'https://s3.amazonaws.com/topbunk/bundle.js'
+  'bookingHost': process.env.bookingHost || 'http://ec2co-ecsel-14mqx2j7r6mip-726135605.us-east-2.elb.amazonaws.com:9005',
+  'bookingClient': process.env.bookingClient || 'https://s3.amazonaws.com/topbunk/bundle.js'
 }
