@@ -75,29 +75,29 @@ app.get('/search', (req, res) => {
 });
 
 // Neighborhood API endpoints
-// app.get('/listingdata', (req, res) => {
-//   let requestId = req.query.id;
-//   requestId = requestId.slice(-3) * 1;  // TO BE UPDATED
-//   axios.get(`http://3.16.89.66/listingdata?id=${requestId}`)
-//     .then((results) => res.send(results.data))
-//     .catch((err) => console.error(err));
-// });
+app.get('/listingdata', (req, res) => {
+  let requestId = req.query.id;
+  requestId = requestId.slice(-3) * 1;  // TO BE UPDATED
+  axios.get(`http://18.216.121.24/listingdata?id=${requestId}`)
+    .then((results) => res.send(results.data))
+    .catch((err) => console.error(err));
+});
 
-// app.get('/neighborhooddata', (req, res) => {
-//   let requestId = req.query.id;
-//   requestId = requestId.slice(-3) * 1;  // TO BE UPDATED
-//   axios.get(`http://3.16.89.66/neighborhooddata?id=${requestId}`)
-//     .then((results) => res.send(results.data))
-//     .catch((err) => console.error(err));
-// });
+app.get('/neighborhooddata', (req, res) => {
+  let requestId = req.query.id;
+  requestId = requestId.slice(-3) * 1;  // TO BE UPDATED
+  axios.get(`http://18.216.121.24/neighborhooddata?id=${requestId}`)
+    .then((results) => res.send(results.data))
+    .catch((err) => console.error(err));
+});
 
-// app.get('/landmarkdata', (req, res) => {
-//   let lat = req.query.listingLat;
-//   let long = req.query.listingLong;
-//   axios.get(`http://3.16.89.66/landmarkdata?listingLat=${lat}&listingLong=${long}`)
-//     .then((results) => res.send(results.data))
-//     .catch((err) => console.error(err));
-// });
+app.get('/landmarkdata', (req, res) => {
+  let lat = req.query.listingLat;
+  let long = req.query.listingLong;
+  axios.get(`http://18.216.121.24/landmarkdata?listingLat=${lat}&listingLong=${long}`)
+    .then((results) => res.send(results.data))
+    .catch((err) => console.error(err));
+});
 
 /////////// SSR for page & main /listings endpoint ///////////
 
@@ -143,7 +143,7 @@ const getSSRObjects = (id) => {
     }),
 
     // 3: Neighborhood
-    axios.get(`${services.neighborhoodHost}/renderNeighborhood`, {
+    axios.get(`${services.neighborhoodHost}/renderNeighbs`, {
       params: {
         id: id
       }
@@ -159,7 +159,6 @@ const getSSRObjects = (id) => {
     console.error(err);
   })
 }
-
 
 // Send back SSR response to main request
 app.get('/listings', (req, res) => {    
@@ -178,6 +177,8 @@ app.get('/listings', (req, res) => {
         <link type="text/css" rel="stylesheet" href="${services.bookingHost}/guestBar.css">
         <link type="text/css" rel="stylesheet" href="${services.bookingHost}/flexboxgrid2.css">
         <link type="text/css" rel="stylesheet" href="${services.bookingHost}/_datepicker.css">
+        <!-- Neighborhood stylesheet -->
+        <link type="text/css" rel="stylesheet" href="http://sdc-neighb-989266127.us-east-2.elb.amazonaws.com/styles.css">
         <link rel="icon" type="image/png" href="https://s3.us-east-2.amazonaws.com/topbunk-profilephotos/favicon.ico">
         <title>TopBunk</title>
       </head>
@@ -186,7 +187,7 @@ app.get('/listings', (req, res) => {
         <div class="container-left">
           <div id="description">${results[1].ssr_html}</div>
           <div id="reviews">${results[0].ssr_html}</div>
-          <!-- <div id="neighborhood">${results[3].ssr_html}</div> -->
+          <div id="neighborhood">${results[3].ssr_html}</div>
         </div>
         <div class=container-right>
           <div id="booking">${results[2].ssr_html}</div>
@@ -224,12 +225,12 @@ app.get('/listings', (req, res) => {
           );
         </script>
 
-        <!-- <script>
+        <script>
         ReactDOM.hydrate(
           React.createElement(Neighborhood, ${results[3].props}),
           document.getElementById('neighborhood')
           );
-        </script> -->
+        </script>
 
         <!-- END: HYDRATION -->
 

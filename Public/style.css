@@ -36,7 +36,8 @@ a:hover {
 }
 
 #description {
-  margin-left: -94.5px;
+  /* margin-left: -94.5px; */
+  padding-left: 30px;
   margin-top: 20px;
   margin-bottom: 5px;
 }
@@ -47,6 +48,7 @@ a:hover {
 
 #neighborhood {
   padding-left: 24px;
+  margin-top: 20px;
 }
 
 #booking {

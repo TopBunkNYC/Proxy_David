@@ -29,7 +29,8 @@
     "express": "^4.16.2",
     "newrelic": "^4.11.0",
     "path": "^0.12.7",
-    "pm2": "^3.2.2"
+    "pm2": "^3.2.2",
+    "redis": "^2.8.0"
   },
   "devDependencies": {
     "morgan": "^1.9.1",

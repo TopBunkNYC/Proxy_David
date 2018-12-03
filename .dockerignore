@@ -3,3 +3,4 @@ config.js
 snippets.txt
 id_rsa
 id_rsa.pub
+dockerenv.txt

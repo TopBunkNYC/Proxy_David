@@ -3,7 +3,7 @@ module.exports = {
   'reviewsClient': process.env.reviewsClient || 'https://s3.us-east-2.amazonaws.com/topbunk-profilephotos/client-bundle.js',
   'descriptionHost': process.env.descriptionHost || 'http://ec2co-ecsel-uzede5a0l6oa-1604819410.us-east-1.elb.amazonaws.com:7000',
   'descriptionClient': process.env.descriptionClient || 'https://s3.amazonaws.com/topbunk-nyc-description/bundle.js',
-  'neighborhoodHost': process.env.neighborhoodHost || 'http://sdc-neighb-989266127.us-east-2.elb.amazonaws.com/',
+  'neighborhoodHost': process.env.neighborhoodHost || 'http://18.216.121.24',
   'neighborhoodClient': process.env.neighborhoodClient || 'http://sdc-neighb-989266127.us-east-2.elb.amazonaws.com/app.js',
   'bookingHost': process.env.bookingHost || 'http://ec2co-ecsel-14mqx2j7r6mip-726135605.us-east-2.elb.amazonaws.com:9005',
   'bookingClient': process.env.bookingClient || 'https://s3.amazonaws.com/topbunk/bundle.js'

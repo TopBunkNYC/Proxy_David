@@ -1,2 +1,0 @@
-useCompression=false
-reviewsHost=http://18.218.35.42
