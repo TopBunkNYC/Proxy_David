@@ -5,3 +5,5 @@ newrelic.js
 newrelic_agent.log
 config.js
 snippets.txt
+id_rsa
+id_rsa.pub

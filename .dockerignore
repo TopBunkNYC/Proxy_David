@@ -1,3 +1,5 @@
 topbunk-reviews-key.pem
 config.js
 snippets.txt
+id_rsa
+id_rsa.pub

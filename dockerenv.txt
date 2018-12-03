@@ -1,2 +1,2 @@
-newrelic=d05e9178acb91dbaed2037a89ed05ce6bd2f13d1
 useCompression=false
+reviewsHost=http://18.218.35.42

@@ -1,4 +1,3 @@
-require('newrelic');
 const express = require('express');
 const path = require('path');
 const compression = require('compression');
@@ -20,29 +19,30 @@ app.all('/*', function(req, res, next) {
  next();
 });
 
-// To be modified: Description API endpoint
-// app.get('/description', (req, res) => {
-//   axios.get(`http://52.14.238.117${req.url}`)
-//     .then((results) => {
-//       res.send(results.data);
-//     })
-//     .catch((err) => {
-//       console.error(err);
-//       res.send();
-//     });
-// });
+/////////// Microservice endpoints ///////////
+// Description API endpoint
+app.get('/description', (req, res) => {
+  axios.get(`${services.descriptionHost}${req.url}`)
+    .then((results) => {
+      res.send(results.data);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.send();
+    });
+});
 
-// To be modified: Booking API endpoints
-// app.get('/bookinglisting/:id', (req, res) => {
-//   let id = req.params.id
-//   axios.get(`http://18.216.104.91/bookinglisting/${id}`)
-//     .then((results) => res.send(results.data))
-//     .catch((err) => console.error(err));
-// });
+// Booking API endpoint
+app.get('/bookinglisting/:id', (req, res) => {
+  let id = req.params.id
+  axios.get(`${services.bookingHost}/bookinglisting/${id}`)
+    .then((results) => res.send(results.data))
+    .catch((err) => console.error(err));
+});
 
 // Reviews API endpoints
 app.get('/ratings', (req, res) => {
-  axios.get(`${services.Reviews}${req.url}`)
+  axios.get(`${services.reviewsHost}${req.url}`)
     .then((results) => {
       res.send(results.data);
     })
@@ -53,7 +53,7 @@ app.get('/ratings', (req, res) => {
 });
 
 app.get('/reviews', (req, res) => {
-  axios.get(`${services.Reviews}${req.url}`)
+  axios.get(`${services.reviewsHost}${req.url}`)
     .then((results) => {
       res.send(results.data);
     })
@@ -64,7 +64,7 @@ app.get('/reviews', (req, res) => {
 });
 
 app.get('/search', (req, res) => {
-  axios.get(`${services.Reviews}${req.url}`)
+  axios.get(`${services.reviewsHost}${req.url}`)
     .then((results) => {
       res.send(results.data);
     })
@@ -74,7 +74,7 @@ app.get('/search', (req, res) => {
     });
 });
 
-// To be modified: Neighborhood API endpoints
+// Neighborhood API endpoints
 // app.get('/listingdata', (req, res) => {
 //   let requestId = req.query.id;
 //   requestId = requestId.slice(-3) * 1;  // TO BE UPDATED
@@ -99,10 +99,12 @@ app.get('/search', (req, res) => {
 //     .catch((err) => console.error(err));
 // });
 
-const getSSRTuples = (id) => {
+/////////// SSR for page & main /listings endpoint ///////////
+
+const getSSRObjects = (id) => {
   return Promise.all([
     // 0: Reviews
-    axios.get(`${services.Reviews}/renderReviews`, {
+    axios.get(`${services.reviewsHost}/renderReviews`, {
       params: {
         id: id
       }
@@ -110,15 +112,48 @@ const getSSRTuples = (id) => {
     .then(({data}) => {
       return data;
     })
-    .catch((err) => console.error(err))
+    .catch((err) => {
+      console.error(err)
+    }),
 
-    // ,
     // 1: Description
+    axios.get(`${services.descriptionHost}/renderReviews`, {
+      params: {
+        id: id
+      }
+    })
+    .then(({data}) => {
+      return data;
+    })
+    .catch((err) => {
+      console.error(err)
+    }),
 
     // 2: Booking
+    axios.get(`${services.bookingHost}/renderBooking`, {
+      params: {
+        id: id
+      }
+    })
+    .then(({data}) => {
+      return data;
+    })
+    .catch((err) => {
+      console.error(err)
+    }),
 
     // 3: Neighborhood
-
+    axios.get(`${services.neighborhoodHost}/renderNeighborhood`, {
+      params: {
+        id: id
+      }
+    })
+    .then(({data}) => {
+      return data;
+    })
+    .catch((err) => {
+      console.error(err)
+    })
   ])
   .catch((err) => {
     console.error(err);
@@ -128,52 +163,71 @@ const getSSRTuples = (id) => {
 
 // Send back SSR response to main request
 app.get('/listings', (req, res) => {    
-  getSSRTuples(req.query.id)
+  getSSRObjects(req.query.id)
   .then((results) => {
     res.end(`
       <!DOCTYPE html>
       <html lang="en">
       <head>
-      <meta charset="UTF-8">
-      <link rel="stylesheet" href="/style.css">
-      <link rel="stylesheet" href="${services.Reviews}/style.css">
-      <!-- <link type="text/css" rel="stylesheet" href="http://18.218.27.164/style.css"> -->
-      <!-- <link type="text/css" rel="stylesheet" href="http://3.16.89.66/style.css"> -->
-      <!-- <link type="text/css" rel="stylesheet" href="http://18.216.104.91/guestBar.css"> -->
-      <link rel="icon" type="image/png" href="https://s3.us-east-2.amazonaws.com/topbunk-profilephotos/favicon.ico">
-      <title>TopBunk</title>
+        <meta charset="UTF-8">
+        <!-- Proxy stylesheet -->
+        <link rel="stylesheet" href="/style.css">
+        <!-- Bookings stylesheet -->
+        <!-- <link type="text/css" rel="stylesheet" href="http://18.216.104.91/guestBar.css"> -->
+        <link rel="icon" type="image/png" href="https://s3.us-east-2.amazonaws.com/topbunk-profilephotos/favicon.ico">
+        <title>TopBunk</title>
       </head>
       
       <body>
-      <div class="container-left">
-      <div id="description"></div>
-      <div id="reviews">${results[0][0]}</div>
-      <div id="neighborhood"></div>
-      </div>
-      <div class=container-right>
-      <div id="booking"></div>
-      </div>
-      
-      <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
-      <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
-      
-      <!-- <script src="http://52.14.238.117/bundle.js"></script>
-      <script src="http://18.216.104.91/bundle.js"></script>
-      <script src="http://18.218.27.164/bundle.js"></script>
-      <script src="http://3.16.89.66/app.js"></script> -->
-      
-      <!-- <script>ReactDOM.render(React.createElement(Description), document.getElementById('description'));</script> -->
-      <!-- <script>ReactDOM.render(React.createElement(Neighborhood), document.getElementById('neighborhood'));</script> -->
-      
-      <script src="${services.ReviewsClient}"></script>
-      <!-- INSERT ALL CLIENT BUNDLES ABOVE THIS LINE -->
-      
-      <script>
-      ReactDOM.hydrate(
-        React.createElement(Reviews, ${results[0][1]}),
-        document.getElementById('reviews')
-        );
-      </script>
+        <div class="container-left">
+          <div id="description">${results[1].ssr_html}</div>
+          <div id="reviews">${results[0].ssr_html}</div>
+          <div id="neighborhood">${results[3].ssr_html}</div>
+        </div>
+        <div class=container-right>
+          <div id="booking">${results[2].ssr_html}</div>
+        </div>
+        
+        <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+        <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+            
+        <!-- BEGINNING: CLIENT BUNDLES -->
+        <script src="${services.descriptionClient}"></script>
+        <script src="${services.reviewsClient}"></script>
+        <script src="${services.neighborhoodClient}"></script>
+        <script src="${services.bookingClient}"></script>
+        <!-- END: CLIENT BUNDLES -->
+        
+        <!-- BEGINNING: HYDRATION -->
+        <script>
+        ReactDOM.hydrate(
+          React.createElement(Description, ${results[1].props}),
+          document.getElementById('description')
+          );
+        </script>
+
+        <script>
+        ReactDOM.hydrate(
+          React.createElement(Booking, ${results[2].props}),
+          document.getElementById('booking')
+          );
+        </script>
+
+        <script>
+        ReactDOM.hydrate(
+          React.createElement(Reviews, ${results[0].props}),
+          document.getElementById('reviews')
+          );
+        </script>
+
+        <script>
+        ReactDOM.hydrate(
+          React.createElement(Neighborhood, ${results[3].props}),
+          document.getElementById('neighborhood')
+          );
+        </script>
+        <!-- END: HYDRATION -->
+
       </body>
       </html>
     `);
