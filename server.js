@@ -5,6 +5,7 @@ const axios = require('axios');
 const parser = require('body-parser');
 const services = require('./services.js');
 const port = process.env.PORT || 8000;
+const redis = require('redis');
 
 const app = express();
 
@@ -18,6 +19,33 @@ app.all('/*', function(req, res, next) {
  res.header('Access-Control-Allow-Origin', '*');
  next();
 });
+
+/////////// Redis Cache ///////////////
+var redisClient = redis.createClient({
+  host: process.env.redisHost || require('./config.js').redisHost,
+  port: 6379,
+  password: process.env.redisPW || require('./config.js').redisPW
+});
+redisClient.on('connect', function() {
+  console.log('Redis client connected');
+});
+redisClient.on('error', function (err) {
+  console.log('Something went wrong connecting to Redis: ' + err);
+});
+
+const cache = (req, res, next) => {
+  const id = req.query.id;
+  redisClient.get(id, (err, data) => {
+    if (err) {
+      throw err;
+    }
+    if (data !== null) {
+      res.end(data);
+    } else {
+      next();
+    }
+  });
+}
 
 /////////// Microservice endpoints ///////////
 // Description API endpoint
@@ -160,11 +188,11 @@ const getSSRObjects = (id) => {
   })
 }
 
-// Send back SSR response to main request
-app.get('/listings', (req, res) => {    
+// Send back SSR response to main request, using cache middleware
+app.get('/listings', cache, (req, res) => {    
   getSSRObjects(req.query.id)
   .then((results) => {
-    res.end(`
+    let clientSSR = (`
       <!DOCTYPE html>
       <html lang="en">
       <head>
@@ -237,6 +265,8 @@ app.get('/listings', (req, res) => {
       </body>
       </html>
     `);
+    res.end(clientSSR);
+    redisClient.set(req.query.id, clientSSR);
   })
   .catch((err) => console.error(err))
 });
