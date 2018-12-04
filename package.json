@@ -1,38 +1,41 @@
 {
-  "name": "proxy_stacy",
-  "version": "1.0.0",
-  "description": "Stacy Kim's proxy",
+  "name": "proxy_david",
+  "version": "1.1.0",
+  "description": "David's proxy for TopBunk",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "server-node": "node server.js",
     "server-dev": "nodemon server.js",
-    "react-dev": "webpack -d --watch",
-    "seed": "mysql -u stacykim -p --host=staybnb.c1bo9omfdnqb.us-east-2.rds.amazonaws.com stacykim",
     "start-aws": "pm2 start server.js",
     "listpm2": "pm2 list",
     "pm2server": "pm2 show server",
     "pm2stop": "pm2 stop 0",
-    "connect": "chmod 400 proxyserver.pem && ssh -i \"proxyserver.pem\" ubuntu@ec2-52-15-86-173.us-east-2.compute.amazonaws.com"
+    "lighthouse-test": "lighthouse http://ec2co-ecsel-hyarl8va80iy-1913124093.us-east-2.elb.amazonaws.com/listings?id=9292830"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Staybnb/Proxy_Stacy.git"
+    "url": "git+https://github.com/TopBunkNYC/Proxy_David.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Staybnb/Proxy_Stacy/issues"
+    "url": "https://github.com/TopBunkNYC/Proxy_David/issues"
   },
-  "homepage": "https://github.com/Staybnb/Proxy_Stacy#readme",
+  "homepage": "https://github.com/TopBunkNYC/Proxy_David#readme",
   "dependencies": {
     "axios": "^0.18.0",
     "body-parser": "^1.18.3",
+    "compression": "^1.7.3",
     "cors": "^2.8.4",
     "express": "^4.16.2",
-    "morgan": "^1.9.1",
-    "nodemon": "^1.18.5",
+    "newrelic": "^4.11.0",
     "path": "^0.12.7",
     "pm2": "^3.2.2",
-    "request": "^2.88.0"
+    "redis": "^2.8.0"
+  },
+  "devDependencies": {
+    "lighthouse": "^4.0.0-alpha.2-3.2.1",
+    "morgan": "^1.9.1",
+    "nodemon": "^1.18.7"
   }
 }

@@ -1,35 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <link rel="stylesheet" href="/style.css">
-  <link type="text/css" rel="stylesheet" href="http://18.218.27.164/style.css">
-  <link type="text/css" rel="stylesheet" href="http://3.16.89.66/style.css">
-  <link type="text/css" rel="stylesheet" href="http://18.216.104.91/guestBar.css">
-  <link rel="icon" type="image/png" href="http://www.imgur.com/NBkqB9v.png">
-  <title>Staybnb</title>
-</head>
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/style.css">
+    <!-- <link type="text/css" rel="stylesheet" href="http://18.218.27.164/style.css"> -->
+    <!-- <link type="text/css" rel="stylesheet" href="http://3.16.89.66/style.css"> -->
+    <!-- <link type="text/css" rel="stylesheet" href="http://18.216.104.91/guestBar.css"> -->
+    <link rel="icon" type="image/png" href="https://s3.us-east-2.amazonaws.com/topbunk-profilephotos/favicon.ico">
+    <title>TopBunk</title>
+  </head>
 
-<body>
-  <div class="containerLeft">
-    <div id="description"></div>
-    <div id="reviews"></div>
-    <div id="neighborhood"></div>
-  </div>
-  <div class="containerRight">
-    <div id="booking"></div>
-  </div>
+  <body>
+    <div class="container-left">
+      <div id="description"></div>
+      <div id="reviews"></div>
+      <div id="neighborhood"></div>
+    </div>
+    <div class=container-right>
+      <div id="booking"></div>
+    </div>
 
-  <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
 
-  <script src="http://52.14.238.117/bundle.js"></script>
-  <script src="http://18.216.104.91/bundle.js"></script>
-  <script src="http://18.218.27.164/bundle.js"></script>
-  <script src="http://3.16.89.66/app.js"></script>
-   
-  <script>ReactDOM.render(React.createElement(Description), document.getElementById('description'));</script>
-  <script>ReactDOM.render(React.createElement(Neighborhood), document.getElementById('neighborhood'));</script>
-
-</body>
+    <!-- <script src="http://52.14.238.117/bundle.js"></script>
+    <script src="http://18.216.104.91/bundle.js"></script>
+    <script src="http://18.218.27.164/bundle.js"></script>
+    <script src="http://3.16.89.66/app.js"></script> -->
+    
+    <!-- <script>ReactDOM.render(React.createElement(Description), document.getElementById('description'));</script> -->
+    <!-- <script>ReactDOM.render(React.createElement(Neighborhood), document.getElementById('neighborhood'));</script> -->
+    <script>
+      ReactDOM.render(
+        React.createElement(Reviews),
+        document.getElementById('reviews')
+      );
+    </script>
+  </body>
 </html>

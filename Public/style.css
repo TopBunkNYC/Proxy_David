@@ -21,18 +21,25 @@ a:hover {
   text-decoration: underline;
 }
 
-.containerLeft {
+.container-left {
   float: left;
-  width: 60%;
+  padding-left: 24px;
+  width: 55%;
 }
 
-.containerRight {
-  float:right;
-  width:40%;
+.container-right {
+  float: right;
+  position: fixed;
+  left: 760px;
+  top: 20px;
+  right: 5%;
 }
 
 #description {
-  margin-left:-94px !important;
+  /* margin-left: -94.5px; */
+  padding-left: 30px;
+  margin-top: 20px;
+  margin-bottom: 5px;
 }
 
 #reviews {
@@ -41,10 +48,20 @@ a:hover {
 
 #neighborhood {
   padding-left: 24px;
+  margin-top: 20px;
 }
 
 #booking {
   position:fixed;
   top:20px;
   padding-left: 3%
+}
+
+#sectionTitle {
+  width: 60% !important;
+}
+
+.searchBar {
+  margin-left: 15px !important;
+  width: 82% !important;
 }
