@@ -8,3 +8,4 @@ snippets.txt
 id_rsa
 id_rsa.pub
 dockerenv.txt
+*.DS_Store

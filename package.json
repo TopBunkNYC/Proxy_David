@@ -9,7 +9,8 @@
     "start-aws": "pm2 start server.js",
     "listpm2": "pm2 list",
     "pm2server": "pm2 show server",
-    "pm2stop": "pm2 stop 0"
+    "pm2stop": "pm2 stop 0",
+    "lighthouse-test": "lighthouse http://ec2co-ecsel-hyarl8va80iy-1913124093.us-east-2.elb.amazonaws.com/listings?id=9292830"
   },
   "repository": {
     "type": "git",
@@ -33,6 +34,7 @@
     "redis": "^2.8.0"
   },
   "devDependencies": {
+    "lighthouse": "^4.0.0-alpha.2-3.2.1",
     "morgan": "^1.9.1",
     "nodemon": "^1.18.7"
   }
