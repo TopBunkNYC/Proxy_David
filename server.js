@@ -128,60 +128,34 @@ app.get('/landmarkdata', (req, res) => {
 });
 
 /////////// SSR for page & main /listings endpoint ///////////
+const getService = (endpoint, id) => {
+  return axios.get(endpoint, {
+    params: {
+      id: id
+    }, 
+    timeout: 10000
+  })
+  .then(({data}) => {
+    return data;
+  })
+  .catch((err) => {
+    console.error(err)
+  })
+}
 
 const getSSRObjects = (id) => {
   return Promise.all([
     // 0: Reviews
-    axios.get(`${services.reviewsHost}/renderReviews`, {
-      params: {
-        id: id
-      }
-    })
-    .then(({data}) => {
-      return data;
-    })
-    .catch((err) => {
-      console.error(err)
-    }),
+    getService(`${services.reviewsHost}/renderReviews`, id),
 
     // 1: Description
-    axios.get(`${services.descriptionHost}/renderDescription`, {
-      params: {
-        id: id
-      }
-    })
-    .then(({data}) => {
-      return data;
-    })
-    .catch((err) => {
-      console.error(err)
-    }),
+    getService(`${services.descriptionHost}/renderDescription`, id),
 
     // 2: Booking
-    axios.get(`${services.bookingHost}/renderBooking`, {
-      params: {
-        id: id
-      }
-    })
-    .then(({data}) => {
-      return data;
-    })
-    .catch((err) => {
-      console.error(err)
-    }),
+    getService(`${services.bookingHost}/renderBooking`, id),
 
     // 3: Neighborhood
-    axios.get(`${services.neighborhoodHost}/renderNeighbs`, {
-      params: {
-        id: id
-      }
-    })
-    .then(({data}) => {
-      return data;
-    })
-    .catch((err) => {
-      console.error(err)
-    })
+    getService(`${services.neighborhoodHost}/renderNeighbs`, id),
   ])
   .catch((err) => {
     console.error(err);
@@ -213,12 +187,12 @@ app.get('/listings', cache, (req, res) => {
       
       <body>
         <div class="container-left">
-          <div id="description">${results[1].ssr_html}</div>
-          <div id="reviews">${results[0].ssr_html}</div>
-          <div id="neighborhood">${results[3].ssr_html}</div>
+          <div id="description">${results[1] !== undefined ? results[1].ssr_html : ''}</div>
+          <div id="reviews">${results[0] !== undefined ? results[0].ssr_html : ''}</div>
+          <div id="neighborhood">${results[3] !== undefined ? results[3].ssr_html : ''}</div>
         </div>
         <div class=container-right>
-          <div id="booking">${results[2].ssr_html}</div>
+          <div id="booking">${results[2] !== undefined ? results[2].ssr_html : ''}</div>
         </div>
         
         <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
@@ -234,28 +208,28 @@ app.get('/listings', cache, (req, res) => {
         <!-- BEGINNING: HYDRATION -->
         <script>
         ReactDOM.hydrate(
-          React.createElement(Description, ${results[1].props}),
+          React.createElement(Description, ${results[1] !== undefined ? results[1].props : undefined}),
           document.getElementById('description')
           );
         </script>
 
         <script>
         ReactDOM.hydrate(
-          React.createElement(Booking, ${JSON.stringify(results[2].props)}),
+          React.createElement(Booking, ${results[2] !== undefined ? JSON.stringify(results[2].props) : undefined}),
           document.getElementById('booking')
           );
         </script>
 
         <script>
         ReactDOM.hydrate(
-          React.createElement(Reviews, ${results[0].props}),
+          React.createElement(Reviews, ${results[0] !== undefined ? results[0].props : undefined}),
           document.getElementById('reviews')
           );
         </script>
 
         <script>
         ReactDOM.hydrate(
-          React.createElement(Neighborhood, ${results[3].props}),
+          React.createElement(Neighborhood, ${results[3] !== undefined ? results[3].props : undefined}),
           document.getElementById('neighborhood')
           );
         </script>
